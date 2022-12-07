@@ -5,10 +5,10 @@ public class TasksL4 {
     public static void main(String[] args) {
         System.out.println(essay(10,7, "hello my name is Bessie and this is my essay"));
         System.out.println();
-        System.out.println(split("()()()"));
-        System.out.println(split("((()))"));
-        System.out.println(split("((()))(())()()(()())"));
-        System.out.println(split("((())())(()(()()))"));
+        System.out.println(split("()()()"));               // [(), (), ()]
+        System.out.println(split("((()))"));               // [((()))]
+        System.out.println(split("((()))(())()()(()())")); // [((()))), (()), (), (), (()())]
+        System.out.println(split("((())())(()(()()))"));   // [((())()), (()(()()))]
         System.out.println();
         System.out.println(toCamelCase("hello_edabit"));  // helloEdabit
         System.out.println(toSnakeCase("helloEdabit"));   // hello_edabit
@@ -23,18 +23,26 @@ public class TasksL4 {
         System.out.println(BMI("55 kilos", "1.65 meters")); // "20.2 Normal weight"
         System.out.println(BMI("154 pounds", "2 meters"));  // "17.5 Underweight"
         System.out.println();
+        System.out.println(bugger(39));  // 3
+        System.out.println(bugger(999)); // 4
+        System.out.println(bugger(4));   // 0
+        System.out.println();
         System.out.println(toStarShorthand("abbccc"));    // ab*2c*3
         System.out.println(toStarShorthand("77777geff")); // 7*5gef*2
         System.out.println(toStarShorthand(""));          // ""
         System.out.println();
-        System.out.println(doesRhyme("Sam I am!", "Green eggs and ham."));
-        System.out.println(doesRhyme("Sam I am!", "Green eggs and HAM."));
+        System.out.println(doesRhyme("Sam I am!", "Green eggs and ham."));            // true
+        System.out.println(doesRhyme("Sam I am!", "Green eggs and HAM."));            // true
+        System.out.println(doesRhyme("You are off to the races", "a splendid day.")); // false
         System.out.println();
         System.out.println(trouble(451999277, 1177722899)); // true
         System.out.println(trouble(1222345, 12345));        // false
         System.out.println(trouble(666789, 12345667));      // true
         System.out.println(trouble(33789, 12345337));       // false
-
+        System.out.println();
+        System.out.println(countUniqueBooks("AZYWABBCATTTA", 'A'));    // 4
+        System.out.println(countUniqueBooks("$AA$BBCATT$C$$B$", '$')); // 3
+        System.out.println(countUniqueBooks("ZZABCDEF", 'Z'));         // 0
     }
     public static String essay(int n, int k, String text) { // №1
         StringBuilder res = new StringBuilder();
@@ -139,14 +147,18 @@ public class TasksL4 {
     }
 
     public static int bugger(int number) { // №6
-        int result = 0, i = 1;
-        while(number > 9) {
-            while(number > 9) {
-                i *= number % 10;
-                number /= 10;
+        int count = 0, newNumber = 1;
+        StringBuilder strNumber = new StringBuilder(Integer.toString(number));
+        while(strNumber.length() > 1) {
+            for(int i = 0; i < strNumber.length(); i++) {
+                newNumber *= Character.getNumericValue(strNumber.charAt(i));
             }
+            strNumber.setLength(0);
+            strNumber.append(newNumber);
+            newNumber = 1;
+            count ++;
         }
-        return result;
+        return count;
     }
 
     public static String toStarShorthand(String str) { // №7
@@ -156,8 +168,8 @@ public class TasksL4 {
         for(int i = 0; i < str.length(); i++) {
             int j = i, count = 1;
             while(str.length()-1 > j && str.charAt(i) == str.charAt(j+1)) {
-                j += 1;
-                count += 1;
+                j++;
+                count++;
             }
             i = j;
             res.append(str.charAt(i));
@@ -203,7 +215,20 @@ public class TasksL4 {
     }
 
     public static int countUniqueBooks(String stringSequence, char bookEnd) { // №10
-
-        return 0;
+        ArrayList<Character> unique = new ArrayList<>();
+        int count = 0;
+        boolean countEnd = false;
+        for(int i = 0; i < stringSequence.length(); i++) {
+            if(stringSequence.charAt(i) == bookEnd) {
+                countEnd = !countEnd;
+            }
+            if(countEnd) {
+                if(!unique.contains(stringSequence.charAt(i))) {
+                    unique.add(stringSequence.charAt(i));
+                    count++;
+                }
+            }
+        }
+        return --count;
     }
 }
